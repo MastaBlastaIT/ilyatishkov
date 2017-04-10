@@ -138,7 +138,7 @@ int main()
 {
     array_of_strings * head;
     array_of_strings * arr;
-    while (arr = create_list()) {
+    while ((arr = create_list())) {
         head = arr;
         printf("\nIshodnye stroki:\n");
         print_list_as_char_sequence(arr, 0);
