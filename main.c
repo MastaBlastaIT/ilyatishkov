@@ -2,126 +2,133 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct one_string {
-    int str_length;
-    char * str;
-} one_string;
-
-typedef struct array_of_strings {
-    int number;
-    one_string * item;
+typedef struct array_of_strings { //структура списка
+    char character;
+    struct array_of_strings * next;
 } array_of_strings;
 
-char* getstr() //ввод строки
-{
-    char *ptr = (char*)malloc(sizeof(char));
-    *ptr = '\0';
-    char buf[81];
-    int n, len = 0;
-    do
-    {
+void delete_list(array_of_strings *); //образ функции (так как она используетс€ в функции создани€, но описываетс€ позже
+
+array_of_strings * create_list() { //создание списка
+    //создраетс€ массив символов произвольной длины (в данном случае 81)
+    //пока scanf возвращает положительное число (т.е. символы, кроме \n ввод€тс€), вносим посимвольно из буфера в список символы
+    //в случае n<0 (ошибка ввода) происходит очистка списка
+    //если встречаетс€ \n (перенос строки) (т.е. n=0), то происходит его ввод без записи в пам€ть
+    char buf[81], *str;
+    array_of_strings *last = (array_of_strings *)malloc(sizeof(array_of_strings));
+    array_of_strings *head;
+    head = last;
+    int n;
+    printf("Vvedite simvoly cherez probel ili Tab:\n");
+    printf("(V konce vvoda nazhmite ENTER)\n");
+    do {
         n = scanf("%80[^\n]", buf);
-        if (n < 0)
-        {
-            free(ptr);
-            ptr = NULL;
+        if (n > 0) {
+            for (str = buf; *str != '\0'; ++str) {
+                last->character = *str;
+                last->next = (array_of_strings *)malloc(sizeof(array_of_strings));
+                last = last->next;
+            }
+            last->character = '\n';
+            last->next = NULL;
             continue;
-        } else
-        if(n == 0)
-            scanf("%*c");
-        else
-        {
-            len += strlen(buf);
-            ptr = (char*)realloc(ptr,len + 1);
-            strcat(ptr, buf);
         }
-    } while(n > 0);
-    return ptr;
+        if (n < 0) {
+            delete_list(head);
+            head->next = NULL;
+        }
+        else scanf("%*c");
+    } while (n > 0);
+
+    last = head;
+    return last;
 }
 
-void create_list (array_of_strings *arr, char *s, int n) { //создание списка со строками
-    arr->number = n;
-    char *temp;
-    if (n == 1) {
-            arr->item = (one_string *)malloc(sizeof(one_string));
-    } else {
-            arr->item = (one_string *)realloc(arr->item, n*sizeof(one_string));
-    }
-    (arr->item + n - 1)->str_length = strlen(s);
-    temp = (char *)malloc(strlen(s)*sizeof(char));
-    (arr->item + n - 1)->str = temp;
-    strcpy(temp, s);
-}
 
 void edit_list (array_of_strings *arr) { //обработка списка
-    int i, count_even, count_numbers, new_len;
-    char * temp;
-    char * newstr;
-    for (i = 0; i < arr->number; i++) {
-        temp = (arr->item + i)->str;
-        newstr = (char*)malloc(sizeof(char));
-        *newstr = '\0';
-        new_len = 0;
-        while (*temp != '\0') {
-            while ((*temp == ' ') || (*temp == '\t')) temp++;
-            if (*temp == '\n') continue;
-            count_even = 0, count_numbers = 0, new_len = 0;
-            while ((*temp != ' ') && (*temp != '\t') && (*temp != '\0')) {
-                count_numbers++;
-                if ((*temp) % 2 == 0) count_even++;
-                temp++;
-            }
-            if (count_even == count_numbers) {
-                temp -= count_even;
-                new_len += count_even;
-                newstr = (char *) realloc(newstr, new_len + 2);
-                strncat(newstr, temp, sizeof(char) * count_even);
-                strcat(newstr, " ");
-                temp += count_even;
-            }
+    //из непрерывной последовательности символов выдел€ютс€ строки, которые €вл€ютс€ числами
+    //дл€ каждого числа считаетс€ общее кол-во цифр и кол-во чЄтных цифр
+    //если эти значени€ не совпадает, ставим в начало числа символ n (или любой произв. буквенный) дл€ удобства вывода
+    //иначе оставл€ем число без изменений
+    int count_even, count_numbers;
+    array_of_strings * p;
+    p = arr;
+    do {
+        while (p->character == ' ' || p->character == '\t' || p->character == '\n') {
+            if (p->next != NULL) p = p->next;
         }
-        *(newstr + strlen(newstr) - 1) = '\0';
-        if (*newstr == '\0') newstr = "Dannaya stroka ne soderzhit nuzhnyh chisel!\n";
-        (arr->item + i)->str = newstr;
-        (arr->item + i)->str_length = strlen(newstr);
+        count_even = 0;
+        count_numbers = 0;
+        array_of_strings *x = p;
+        while (p->character != ' ' && p->character != '\t' && p->character != '\n') {
+            if (p->character % 2 == 0) {
+                count_even++;
+            }
+            count_numbers++;
+            p = p->next;
+        }
+        array_of_strings *y = p;
+        if (count_numbers != count_even) {
+            p = x;
+            p->character = 'n';
+            p = y;
+        }
+    } while (p != NULL && p->next != NULL);
+}
+
+void delete_list(array_of_strings * head){ //удаление списка
+  if (head != NULL){
+    delete_list(head->next);
+    free(head);
+  }
+}
+
+void print_list_as_char_sequence (array_of_strings * arr) { //вывод списка на экран в виде последовательности символов
+    array_of_strings *p = arr;
+    for (; p!=NULL; p = p->next) {
+        printf("%c", p->character);
     }
 }
 
-void erase(array_of_strings * arr) { //очистка пам€ти
-    for (int i = 0; i < arr->number; i++) {
-        if ((arr->item + i)->str) free((arr->item + i)->str);
-    }
-    free(arr->item);
-}
-
-void print(array_of_strings * arr) { //вывод списка на экран
-    int i;
-    char * temp;
-    for (i = 0; i < arr->number; i++) {
-        temp = (arr->item + i)->str;
-        printf("Stroka #%d: %s\n", i + 1, temp);
-    }
+void print_list(array_of_strings * arr) { //вывод списка на экран
+    //из непрерывной последовательности символов выдел€ютс€ строки, которые €вл€ютс€ числами
+    //если встречаем в начале числа букву n (или любую другую, которую мы добавили в предыдущей функции), то выводим, что число не подходит
+    //иначе выводим число
+    array_of_strings * p;
+    p = arr;
+    int i = 0;
+    int x;
+    do {
+        while (p->character == ' ' || p->character == '\t' || p->character == '\n') {
+            if (p->next != NULL) p = p->next;
+        }
+        x = 0;
+        if (p->character == 'n') {
+            //printf("Dannaya stroka ne sootvetstvuet usloviyu!");
+            x = 1;
+        }
+        i++;
+        if (!x) printf("Stroka #%d: ", i);
+        while (p->character != ' ' && p->character != '\t' && p->character != '\n') {
+                if (!x) printf("%c", p->character);
+                p = p->next;
+            }
+        if (!x) printf("\n");
+    } while (p != NULL && p->next != NULL);
 }
 
 int main()
 {
-    array_of_strings arr;
-    char *s = NULL;
-    int n = 0;
-    printf("Vvedite stroki:\n");
-    while ((s = getstr())) {
-        create_list(&arr, s, ++n);
-        free(s);
-    }
-    if (n == 0) {
-        printf("Programma zavershena bez vvoda strok!\n");
-        return 0;
-    }
+    array_of_strings * head;
+    array_of_strings * arr;
+    arr = create_list();
+    head = arr;
     printf("Ishodnye stroki:\n");
-    print(&arr);
+    print_list_as_char_sequence(arr);
     printf("\nStroki posle preobrazovaniy:\n");
-    edit_list(&arr);
-    print(&arr);
-    erase(&arr);
+    edit_list(arr);
+    arr = head;
+    print_list(arr);
+    delete_list(arr);
     return 0;
 }
