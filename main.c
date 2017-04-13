@@ -35,8 +35,8 @@ array_of_strings * create_list() { //создание списка
         }
         if (n < 0) {
             free(last);
-            printf("\nPROGRAMMA ZAVERSHAETSYA....\n");
             head = NULL;
+            printf("\nPROGRAMMA ZAVERSHAETSYA....\n");
             continue;
         }
         else scanf("%*c");
@@ -103,7 +103,39 @@ void print_list_as_char_sequence (array_of_strings * arr, int flag) { //выво
         } while (p != NULL);
         printf("\n");
     } else {
-        int x = 1;
+        //вывод списка после преобразования
+        //создаётся новый список, в котором будут только числа, соотв. условию через 1 пробел (либо пустота)
+        array_of_strings *last = (array_of_strings *)malloc(sizeof(array_of_strings));
+        array_of_strings *head;
+        head = last;
+        int i = 0;
+        p = arr;
+        do {
+            if (p->character == 'n') i = 0;
+            if (p->character == ' ' || p->character == '\t' || p->character == '\n') i = 1;
+            if (p->character != ' ' && p->character != '\t' && p->character != '\n' && (i == 1)) {
+                while (p->character != ' ' && p->character != '\t' && p->character != '\n' && (i == 1)) {
+                    last->character = p->character;
+                    last->next = (array_of_strings *)malloc(sizeof(array_of_strings));
+                    last = last->next;
+                    p = p->next;
+                }
+                last->character = ' ';
+                last->next = (array_of_strings *)malloc(sizeof(array_of_strings));
+                last = last->next;
+            }
+            p = p->next;
+        } while (p != NULL);
+        last->character = '\n';
+        last->next = NULL;
+        last = head;
+        for (last = head; last != NULL; last = last->next) {
+            printf("%c", last->character);
+        }
+        printf("\n");
+        delete_list(last);
+    }
+        /*int x = 1;
         do {
             // y - флаг поиска последнего пробела
             // x - флаг поиска чисел, которые не подходят по условию
@@ -121,8 +153,8 @@ void print_list_as_char_sequence (array_of_strings * arr, int flag) { //выво
                 printf("%c", p->character);
             }
             p = p->next;
-        } while (p != NULL);
-    }
+        } while (p != NULL);*/
+    //}
 }
 
 int main()
