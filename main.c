@@ -135,26 +135,6 @@ void print_list_as_char_sequence (array_of_strings * arr, int flag) { //выво
         printf("\n");
         delete_list(last);
     }
-        /*int x = 1;
-        do {
-            // y - флаг поиска последнего пробела
-            // x - флаг поиска чисел, которые не подходят по условию
-            int y = 1;
-            while ((p->character == ' ' || p->character == '\t' || p->character == '\n') && (p->next != NULL)) {
-                p = p->next;
-                x = 1;
-                y = 0;
-            }
-            if (!y) printf(" ");
-            if (p->character == 'n') {
-                x = 0;
-            }
-            if (x == 1) {
-                printf("%c", p->character);
-            }
-            p = p->next;
-        } while (p != NULL);*/
-    //}
 }
 
 int main()
