@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-
 typedef struct array_of_strings { //структура списка
     char character;
     struct array_of_strings * next;
@@ -35,12 +34,12 @@ array_of_strings * create_list() { //создание списка
             continue;
         }
         if (n < 0) {
-            delete_list(head);
-            head->next = NULL;
+            free(last);
+            head = NULL;
+            continue;
         }
         else scanf("%*c");
     } while (n > 0);
-
     last = head;
     return last;
 }
@@ -104,26 +103,20 @@ void print_list_as_char_sequence (array_of_strings * arr, int flag) { //выво
         printf("\n");
     } else {
         int x = 1;
-        int i, j = 0;
         do {
             // y - флаг поиска последнего пробела
             // x - флаг поиска чисел, которые не подходят по условию
-            // i - флаг вычисления первого выводимого числа
-            // j - флаг вычисления первого выводимого символа
             int y = 1;
             while ((p->character == ' ' || p->character == '\t' || p->character == '\n') && (p->next != NULL)) {
                 p = p->next;
                 x = 1;
                 y = 0;
-                j = 0;
             }
             if (!y) printf(" ");
             if (p->character == 'n') {
-                i++;
                 x = 0;
             }
             if (x == 1) {
-                j = 1;
                 printf("%c", p->character);
             }
             p = p->next;
