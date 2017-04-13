@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 typedef struct array_of_strings { //структура списка
     char character;
@@ -54,8 +55,10 @@ void edit_list (array_of_strings *arr) { //обработка списка
     array_of_strings * p;
     p = arr;
     do {
-        while (p->character == ' ' || p->character == '\t' || p->character == '\n') {
-            if (p->next != NULL) p = p->next;
+        //int y = 1;
+        while ((p->character == ' ' || p->character == '\t' || p->character == '\n') && (p->next != NULL)) {
+            p = p->next;
+            //y = 0;
         }
         count_even = 0;
         count_numbers = 0;
@@ -86,68 +89,69 @@ void delete_list(array_of_strings * head){ //удаление списка
 void print_list_as_char_sequence (array_of_strings * arr, int flag) { //вывод списка на экран в виде последовательности символов
     array_of_strings *p = arr;
     if (!flag) {
-        for (p = arr; p != NULL; p = p->next) {
+        p = arr;
+        do {
+            int x = 1;
+            while ((p->character == ' ' || p->character == '\t' || p->character == '\n') && (p->next != NULL)) {
+                p = p->next;
+                x = 0;
+            }
+            // x - флаг поиска последнего пробела
+            if (!x) printf(" ");
             printf("%c", p->character);
-        }
+            p = p->next;
+        } while (p != NULL);
         printf("\n");
     } else {
         int x = 1;
+        int i, j = 0;
         do {
+            // y - флаг поиска последнего пробела
+            // x - флаг поиска чисел, которые не подходят по условию
+            // i - флаг вычисления первого выводимого числа
+            // j - флаг вычисления первого выводимого символа
+            int y = 1;
+            while ((p->character == ' ' || p->character == '\t' || p->character == '\n') && (p->next != NULL)) {
+                p = p->next;
+                x = 1;
+                y = 0;
+                j = 0;
+            }
+            if (!y) printf(" ");
             if (p->character == 'n') {
+                i++;
                 x = 0;
             }
             if (x == 1) {
+                j = 1;
                 printf("%c", p->character);
-            }
-            if (p->character == ' ' || p->character == '\t' || p->character == '\n') {
-                x = 1;
             }
             p = p->next;
         } while (p != NULL);
     }
 }
 
-/*void print_list(array_of_strings * arr) { //вывод списка на экран
-    //из непрерывной последовательности символов выделяются строки, которые являются числами
-    //если встречаем в начале числа букву n (или любую другую, которую мы добавили в предыдущей функции), то выводим, что число не подходит
-    //иначе выводим число
-    array_of_strings * p;
-    p = arr;
-    int i = 0;
-    int x;
-    do {
-        while (p->character == ' ' || p->character == '\t' || p->character == '\n') {
-            if (p->next != NULL) p = p->next;
-        }
-        x = 0;
-        if (p->character == 'n') {
-            //printf("Dannaya stroka ne sootvetstvuet usloviyu!");
-            x = 1;
-        }
-        i++;
-        if (!x) printf("Stroka #%d: ", i);
-        while (p->character != ' ' && p->character != '\t' && p->character != '\n') {
-                if (!x) printf("%c", p->character);
-                p = p->next;
-            }
-        if (!x) printf("\n");
-    } while (p != NULL && p->next != NULL);
-}*/
-
 int main()
 {
     array_of_strings * head;
     array_of_strings * arr;
+    int i = 0;
+    printf("SEANS NOMER %d\n\n", ++i);
     while ((arr = create_list())) {
         head = arr;
-        printf("\nIshodnye stroki:\n");
-        print_list_as_char_sequence(arr, 0);
-        printf("\nStroki posle preobrazovaniy:\n");
-        edit_list(arr);
-        arr = head;
-        print_list_as_char_sequence(arr, 1);
-        printf("\n\n");
-        delete_list(arr);
+        if (!isdigit(arr->character)) {
+            printf("Oshibka vvoda, poprobuite snova\n\n");
+        } else {
+            printf("\nIshodnye stroki:\n");
+            print_list_as_char_sequence(arr, 0);
+            printf("\nStroki posle preobrazovaniy:\n");
+            edit_list(arr);
+            arr = head;
+            print_list_as_char_sequence(arr, 1);
+            printf("\n");
+            delete_list(arr);
+            printf("SEANS NOMER %d\n\n", ++i);
+        }
     }
     return 0;
 }
