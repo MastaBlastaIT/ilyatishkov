@@ -35,6 +35,7 @@ array_of_strings * create_list() { //создание списка
         }
         if (n < 0) {
             free(last);
+            printf("\nPROGRAMMA ZAVERSHAETSYA....\n");
             head = NULL;
             continue;
         }
