@@ -110,6 +110,7 @@ void print_list_as_char_sequence (array_of_strings * arr, int flag) { //выво
         head = last;
         int i = 0;
         p = arr;
+        if (p->character != 'n') i = 1;
         do {
             if (p->character == 'n') i = 0;
             if (p->character == ' ' || p->character == '\t' || p->character == '\n') i = 1;
