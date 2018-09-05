@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script src="https://code.jquery.com/jquery-latest.js"></script>
+
+  <style>
+
+    select {
+      width: 250px
+    }
+
+    input[type=text], input[type=date] {
+      width: 246px
+    }
+
+    .description {
+      text-align: right
+    }
+
+    .label {
+      display: block;
+      padding-left: 15px;
+      text-indent: -15px;
+    }
+    input[type=checkbox] {
+      padding: 0;
+      margin:0;
+      margin-left: 5px;
+      margin-bottom: 3px;
+      vertical-align: bottom;
+      position: relative;
+      top: -1px;
+      *overflow: hidden;
+    }
+
+    .certname {
+      margin-left: 10px;
+      width: 219px
+    }
+
+  </style>
+</head>
+
+<body>
+  <script>
+    var now = new Date();
+    var today = now.getFullYear() + "-" + (now.getMonth() < 10 ? "0" + (now.getMonth() + 1) : (now.getMonth()) + 1) + "-" + (now.getDate() < 10 ? "0" + now.getDate() : now.getDate());
+    window.onload = function() {
+      $("#date").val(today);
+    };
+  </script>
+  <table cellpadding="5" cellspacing="5">
+    <tr>
+      <td class="description"><span style="font-weight: bold">ФИО заявителя</span></td>
+      <td><select id="Fullname" onchange="">
+            <option value="0" selected disabled>Выберите ФИО...</option>
+            <option value="goncharov">Гончаров Г.А.</option>
+            <option value="tishkov">Тишков И.В.</option>
+            <option value="kobzev">Кобзев А.В.</option>
+        </select></td>
+    </tr>
+    <tr>
+      <td class="description"><span style="font-weight: bold">Тип организации</span></td>
+      <td><select id="Fullname" onchange="">
+            <option value="0" selected disabled>Выберите тип...</option>
+            <option value="ooo">ООО</option>
+            <option value="ip">ИП</option>
+            <option value="zao">ЗАО</option>
+        </select></td>
+    </tr>
+    <tr>
+      <td class="description"><span style="font-weight: bold">Имя организации</span></td>
+      <td><input type="text" placeholder="Введите имя организации..."></td>
+    </tr>
+    <tr>
+      <td class="description"><span style="font-weight: bold">Дата заявки</span></td>
+      <td><input type="date" id="date" name="date" value="" min="2018-01-01" max="2099-12-31" oninput=""></td>
+    </tr>
+    <tr>
+      <td class="description"><span style="font-weight: bold">Ссылка на сайт компании</span></td>
+      <td><input type="text" placeholder="Добавьте ссылку..."></td>
+      <td><a href="">Здесь появится ссылка на сайт компании...</a></td>
+    </tr>
+    <tr>
+      <td class="description"><span style="font-weight: bold">Сертификат API</span></td>
+      <td class="label">
+        <input type="checkbox">
+        <input class="certname" placeholder="Введите UID сайта...">
+      </td>
+    </tr>
+    <tr>
+      <td class="description"><span style="font-weight: bold">Сертификат PARTNER</span></td>
+      <td class="label">
+        <input type="checkbox">
+        <input class="certname" placeholder="Введите название клиента...">
+      </td>
+    </tr>
+    <tr>
+      <td class="description"><span style="font-weight: bold">Сертификат SUBPARTNER</span></td>
+      <td class="label">
+        <input type="checkbox">
+        <input class="certname" value="">
+      </td>
+    </tr>
+  </table>
+</body>
+
+</html>
